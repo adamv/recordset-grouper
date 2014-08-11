@@ -58,7 +58,7 @@ public class ResultSetGrouperTest {
         assertFalse(g.nextGroup());
     }
 
-    private static class FirstColumnGrouper extends Grouper<String> {
+    private static class FirstColumnGrouper implements Grouper<String> {
         @Override
         public String getKey(ResultSet rs) throws SQLException {
             return rs.getString(1);
