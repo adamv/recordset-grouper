@@ -1,3 +1,5 @@
+package testutil;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -20,7 +22,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
-public class BaseResultSet implements ResultSet {
+public abstract class BaseResultSet implements ResultSet {
     @Override
     public boolean next() throws SQLException {
         return false;
@@ -118,7 +120,7 @@ public class BaseResultSet implements ResultSet {
 
     @Override
     public String getString(String columnLabel) throws SQLException {
-        return null;
+        return getString(findColumn(columnLabel) - 1);
     }
 
     @Override
@@ -227,9 +229,7 @@ public class BaseResultSet implements ResultSet {
     }
 
     @Override
-    public int findColumn(String columnLabel) throws SQLException {
-        return 0;
-    }
+    public abstract int findColumn(String columnLabel) throws SQLException;
 
     @Override
     public Reader getCharacterStream(int columnIndex) throws SQLException {
