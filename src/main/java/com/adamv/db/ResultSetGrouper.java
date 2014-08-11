@@ -14,7 +14,7 @@ import java.sql.SQLException;
  */
 public class ResultSetGrouper<T> {
     private final ResultSet rs;
-    private final Grouper<T> g;
+    private final Grouping<T> grouping;
 
     private boolean started;
     private boolean finished;
@@ -22,13 +22,13 @@ public class ResultSetGrouper<T> {
     private boolean newGroupPending;
     private T key;
 
-    public ResultSetGrouper(ResultSet rs, Grouper<T> g) {
+    public ResultSetGrouper(ResultSet rs, Grouping<T> grouping) {
         this.rs = rs;
         this.started = false;
         this.finished = false;
         this.newGroupPending = false;
         this.key = null;
-        this.g = g;
+        this.grouping = grouping;
     }
 
     public boolean nextGroup() throws SQLException {
@@ -53,7 +53,7 @@ public class ResultSetGrouper<T> {
             consumed = false;
         }
 
-        key = g.getKey(rs);
+        key = grouping.getKey(rs);
         if (newGroupPending) {
             newGroupPending = false;
             consumed = false;
@@ -88,7 +88,7 @@ public class ResultSetGrouper<T> {
             return false;
         }
 
-        final T thisKey = g.getKey(rs);
+        final T thisKey = grouping.getKey(rs);
         // If thisKey is the same as key, we are still in the same group.
         if ((thisKey == null && key == null) || (key.equals(thisKey))) {
             return true;
@@ -101,7 +101,7 @@ public class ResultSetGrouper<T> {
 
     public T groupKey() {
         if (!started) throw new IllegalStateException("Iteration has not started");
+        if (finished) throw new IllegalStateException("Iteration has finished");
         return key;
     }
-
 }
